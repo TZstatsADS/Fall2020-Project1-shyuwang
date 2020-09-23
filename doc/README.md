@@ -19,4 +19,4 @@ https://htmlpreview.github.io/?https://github.com/TZstatsADS/Fall2020-Project1-s
 
 ### Reproduce the R notebook
 
-Run each chunck in order to view the plots in Rstudio. Or knit the `.rmd` file to produce `.html` file directly.
+Run each chunk in order to view the plots in Rstudio. Or knit the `.rmd` file to produce `.html` file directly.

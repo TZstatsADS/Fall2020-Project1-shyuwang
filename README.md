@@ -27,7 +27,7 @@ Term: Fall 2020
 
 + Main findings:
 
-    * Trump voters were not fans of Barack Obama; they were not satisfied with the U.S. economy during Obama's presidency and prioritized the U.S. economy; they were not proponent of gay marriage
+    * Trump voters were not fans of Barack Obama; they were not satisfied with the U.S. economy during Obama's presidency and prioritized the U.S. economy; they were not proponent of gay marriage.
     * What the survey data suggests about the state-wise support for Hillary and Trump is not consistent with the reality.
 
 Following [suggestions](http://nicercode.github.io/blog/2013-04-05-projects/) by [RICH FITZJOHN](http://nicercode.github.io/about/#Team) (@richfitz). This folder is orgarnized as follows.

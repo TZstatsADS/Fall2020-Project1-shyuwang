@@ -9,7 +9,7 @@ This is the first and only *individual* (as opposed to *team*) this semester.
 
 Term: Fall 2020
 
-+ Projec title: Who voted Trump in 2016
++ Projec title: Who voted Trump in 2016?
 + This project is conducted by Shuyuan Wang, sw3449
 
 + Project summary: Voters in America will decide on 3 November whether Donald Trump remains in the White House for another four years. Speaking of President Trump, his victory over Hillary Clinton in the 2016 presidential election stunned many political observers and pollsters who expected Hillary to be the winner. In this project, I would like to look deeper into the supporters for these two president candidates using the ANES 2016 Time Series data. The questions I want to answer with the data are:

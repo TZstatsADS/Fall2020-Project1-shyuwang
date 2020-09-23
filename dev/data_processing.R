@@ -33,7 +33,8 @@ use_dat <- anes_dat_2016 %>%
             death_penalty = as_factor(V161233),
             eco_since08 = as_factor(V161235x),
             vote_pres = as_factor(V162062x),
-            turnout = as_factor(V162065x)
+            turnout = as_factor(V162065x),
+            most_imp = as_factor(V162116a_1)
   )
 
 # factor level transformation
@@ -44,6 +45,9 @@ levels(use_dat$race)=c("Missing","Missing","White","Black","Asian, native Hawaii
 
 levels(use_dat$abortion)[c(1,2)] <- c("Refused","DK")
 
+levels(use_dat$eco_since08)[1] <- "RF"
+levels(use_dat$eco_since08)[2] <- "DK"
+levels(use_dat$most_imp)[c(1,2,3,4,5,6,7)] <- "NA"
 
 save(use_dat, file="../output/use_dat.RData")
 

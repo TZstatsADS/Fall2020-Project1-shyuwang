@@ -1,10 +1,11 @@
 ---
-title: "A Data Story about ANES in 2016"
+title: "Who voted Trump in 2016"
 author: "Shuyuan Wang, sw3449"
-date: "9/22/2020"
+date: "9/23/2020"
 output:
   html_document:
     df_print: paged
+    toc: yes
   pdf_document: default
 ---
 
@@ -16,12 +17,15 @@ In the remaining several months of 2020, the U.S. president election will be cat
 
 Before diving into details, let me summarize the questions I want to answer with the data:
 
-1. What were different candidates' supporters' opinion on Obama, the previous president? 
-    * More specifically, what were their affect direction and their feeling thermometer values?
+* What are the characteristics of the interviewees that voted for Donald Trump?
+    
+    * What were different candidates' supporters' opinion on Obama, the previous president? 
 
-2. How many interviewers voted for Hillary and Trump? 
-    * Where did they locate?
-    * Was the survey data consistent with the actual result?
+    * What were their opinion on the U.S. economy since 2008?
+
+    * What were their opinion on gay marriage? 
+
+* Additionally: What does the data say about the 2016 presidential election result? Is it consistent with the actual result?
 
 
 
@@ -35,6 +39,7 @@ library(devtools)
 library(RColorBrewer)
 library(data.table)
 library(ggplot2)
+library(cowplot)
 ```
 
 ```{r include=FALSE}
@@ -49,9 +54,9 @@ Among thousands of variables contained in the dataset, I select some of them for
 
 # 3. Analysis
 
-## 3.1 What was voters' opinion on Barack Obama？
+## 3.1 What was Trump supporters' opinion on Barack Obama？
 
-### 3.1.1 What was voters' affect for Obama?
+### 3.1.1 What was their affect for Obama?
 
 According to the following chart, most interviewees who voted for Hillary Clinton showed positive attitude towards Obama. For example, most of them never or seldom felt angry about Obama, and about 80% of them felt proud of Obama more than half the time. However, those who voted for Donald Trump felt quite the opposite. More than 50% of them never felt proud of Obama. 
 
@@ -70,7 +75,7 @@ g1 <- ggplot(anes_vote_obama_angry,
   theme_bw()+
   scale_fill_brewer(palette="Blues")+
   theme(axis.text.x = element_text(angle = 20))+
-  labs(title="Did voters feel angry about Obama?")+
+  labs(title="Did voters feel angry about Obama?", fill="Angry about Obama")+
   xlab("President voted")+
   theme(plot.title = element_text(hjust = 0.5,size=12,face="bold"))
 
@@ -89,11 +94,10 @@ g2 <- ggplot(anes_vote_obama_proud,
   theme_bw()+
   scale_fill_brewer(palette="Blues")+
   theme(axis.text.x = element_text(angle = 20))+
-  labs(title="Did voters feel proud of Obama?")+
+  labs(title="Did voters feel proud of Obama?", fill="Proud of Obama")+
   xlab("President voted")+
   theme(plot.title = element_text(hjust = 0.5,size=12,face="bold"))
 
-library(cowplot)
 plot_grid(g1, g2, labels = "AUTO")
 ```
 
@@ -147,14 +151,138 @@ ggplot(anes_vote_obama_feeling_mode,
   theme(plot.title = element_text(hjust = 0.5,size=15,face="bold"))
 ```
 
-The pattern still holds. However, for Donald Trump voter group, more outliers in Web interview group than Face-to-Face group. It might be due to the fact that when doing questionnaire online, people lost patience and just entered number randomly. But fairly speaking, the wide-spread feeling thermometer values for Obama were actually reasonable. On one hand, he did bring the changes. The U.S. economy revives from aftermath of the Great Recession in his presidency; He expands Medicaid to uninsured low-income Americans. On the other hand, he didn't relieve the racial tensions. 
+The pattern still holds. However, for Donald Trump voter group, more outliers in Web interview group than Face-to-Face group. It might be due to the fact that when doing questionnaire online, people lost patience and just entered number randomly. But fairly speaking, the wide-spread feeling thermometer values for Obama were actually reasonable. On one hand, he did bring the changes. The U.S. economy revives from aftermath of the Great Recession in his presidency; He expands Medicaid to uninsured low-income Americans. On the other hand, he didn't relieve the racial tensions, and people in different parties would hold different opinion on him. 
 
 
-## 3.2 Who did interviewers vote for in 2016 election?
+## 3.2 What were their opinion on the U.S. economy since 2008?
+
+In the aspect of economy, let's see how Trump supporters think of the U.S. economy since 2008. 
+
+```{r fig.width=6, fig.height=3, echo=FALSE}
+anes_eco_08 <- use_dat %>%
+  filter(vote_pres!="Refused"&vote_pres!="DK"&vote_pres!="INAP"&vote_pres!="Missing") %>%
+  filter(eco_since08!="RF" & eco_since08!="DK") %>%
+  group_by(vote_pres) %>%
+  count(eco_since08) %>%
+  mutate(prop=n/sum(n))
+ 
+ggplot(anes_eco_08,
+       aes(x=vote_pres, y=prop, fill=eco_since08)) +
+  geom_bar(stat="identity", colour="black")+ 
+  theme_bw()+
+  scale_fill_brewer(palette="Blues")+
+  theme(axis.text.x = element_text(angle = 20))+
+  labs(title="How did voters think about the economy after 2008?", fill="Eco since 2008")+
+  xlab("President voted")+
+  theme(plot.title = element_text(hjust = 0.5,size=12,face="bold"))
+```
+
+From the chart we can see that Republican voters (i.e. who voted for Donald Trump) were not satisfied with the U.S. economy during Obama's presidency (i.e. since 2008). More than half of them thought the U.S. economy was worse than 2008 in 2016. 
+
+So, how did Trump's supporters think of the importance of economy?
+
+
+```{r fig.width=6, fig.height=4, echo=FALSE}
+anes_most_imp <- use_dat %>%
+  filter(vote_pres!="Refused"&vote_pres!="DK"&vote_pres!="INAP"&vote_pres!="Missing") %>%
+  filter(most_imp!="NA") %>%
+  group_by(most_imp) %>%
+  count(vote_pres) %>%
+  mutate(total=sum(n)) %>%
+  mutate(prop=n/sum(n)) %>%
+  arrange(desc(total)) %>%
+  filter(vote_pres=="Donald Trump" | vote_pres=="Hillary Clinton") %>%
+  ungroup() %>%
+  mutate(rank=dense_rank(desc(total))) %>%
+  filter(rank<=5)
+
+ordered_prob <- unique(anes_most_imp$most_imp)
+anes_most_imp_ordered = anes_most_imp %>% 
+  mutate(most_imp2=factor(most_imp, levels=ordered_prob))
+
+ggplot(anes_most_imp_ordered,
+       aes(x=most_imp2, y=prop, fill=vote_pres))+
+  geom_bar(position="dodge", stat="identity",colour="black")+
+  theme_bw()+
+  scale_fill_brewer(palette="Blues")+
+  labs(title="Most important problem",fill="president voted")+
+  xlab("")+
+  theme(plot.title = element_text(hjust = 0.5,size=15,face="bold"))+
+  theme(axis.text.x = element_text(angle = 20))
+```
+
+The bars above are ordered in the overall total number of votes, which means that among all interviewees most people thought the economy was the most important problem. And among those who think the economy was the most important proble, more than 60% of them are supporters of Trump.
+
+```{r fig.width=8, fig.height=4, echo=FALSE}
+anes_most_imp2 <- use_dat %>%
+  filter(vote_pres=="Donald Trump" | vote_pres=="Hillary Clinton") %>%
+  filter(most_imp!="NA") %>%
+  group_by(vote_pres) %>%
+  count(most_imp) %>%
+  mutate(total=sum(n)) %>%
+  mutate(prop=n/sum(n)) %>%
+  top_n(5,prop) %>%
+  arrange(desc(prop))
+
+most_imp_hc <- anes_most_imp2 %>%
+  filter(vote_pres=="Hillary Clinton")
+
+most_imp_dt <- anes_most_imp2 %>%
+  filter(vote_pres=="Donald Trump")
+
+g3 <- ggplot(most_imp_hc,
+       aes(x=most_imp, y=prop))+
+  geom_bar(stat="identity", colour="black")+
+  labs(title="Top-5 most important problem (Hillary's supporters)")+
+  xlab("")+
+  geom_text(aes(label=paste(round(prop,2))),angle=0,vjust=-0.2,position=position_dodge(0.9),size=3)+
+  theme(axis.text.x = element_text(angle = 20))+
+  theme(plot.title = element_text(hjust = 0.5,size=10,face="bold"))
+
+g4 <- ggplot(most_imp_dt,
+       aes(x=most_imp, y=prop))+
+  geom_bar(stat="identity",colour="black")+
+  labs(title="Top-5 most important problem (Trump's supporters)")+
+  xlab("")+
+  geom_text(aes(label=paste(round(prop,2))),angle=0,vjust=-0.2,position=position_dodge(0.9),size=3)+
+  theme(axis.text.x = element_text(angle = 20))+
+  theme(plot.title = element_text(hjust = 0.5,size=10,face="bold"))
+
+
+plot_grid(g3, g4, labels = "AUTO")
+```
+
+If we separate the supporters of Hillary and Trump, we can see that the economy was the top-5 most important problem in both groups. But in Trump's group, 16% of the supporters cared much about the economy, surpassing the proportion of Hillary's group largely.
+
+This is consistent with what I read in the [news](https://fivethirtyeight.com/features/voters-who-think-the-economy-is-the-countrys-biggest-problem-are-pretty-trumpy-that-might-not-help-him-much/), saying that Republican voters tend to put the economy first. It is because Republican voters were not satisfied with the economy and they viewed the economy as the top problem that they would like to vote Trump, a man with strong business background and slogan of "Make America Great Again". 
+
+
+## 3.3 What were their opinion on gay marriage? 
+
+
+```{r fig.width=10, fig.height=4, echo=FALSE}
+anes_vote_gay <- use_dat %>%
+  filter(vote_pres!="Refused"&vote_pres!="DK"&vote_pres!="INAP"&vote_pres!="Missing") %>%
+  group_by(vote_pres, gay_marriage) %>%
+  count(gay_marriage) %>%
+  group_by(vote_pres) %>%
+  mutate(prop=n/sum(n))
+
+ggplot(anes_vote_gay,
+       aes(x=vote_pres, y=prop, fill=gay_marriage))+
+  geom_bar(stat="identity", colour="black")+
+  labs(title="How did voters view gay marriage", fill="Gay marriage")+
+  xlab("President voted")+
+  theme(plot.title = element_text(hjust = 0.5,size=15,face="bold"))
+```
+
+It's not surprising that people who voted for Donald Trump were not proponent of gay marriage, after all the Republicans are conservative.
+
+## 3.4 What does the data say about the 2016 presidential election result?
 
 According to the post-election interview, we can summarize who did the voters vote in the 2016 election. 
 
-### 3.2.1 Who was voted more, Hillary Clinton or Donald Trump?
+### 3.4.1 Who was voted more, Hillary Clinton or Donald Trump?
 
 ```{r fig.width=6, fig.height=3, echo=FALSE}
 ## seems that Hillary had more supporters than Trump according to the time series data
@@ -175,7 +303,7 @@ ggplot(anes_vote,
 
 The histogram tells us that Hillary Clinton won more votes than Donald Trump.
 
-### 3.2.2 Was the survey data consistent with the actual result?
+### 3.4.2 Was the survey data consistent with the actual result?
 
 It is known to all that the election of the president is an indirect election, in which citizens of the U.S. who are registered to vote in one of the 50 U.S. states or in Washingtong D.C., cast balllots not directly for those offices, but instead for members of the Electoral College. These electors then cast direct votes, known as electoral votes, for president.
 
@@ -202,6 +330,7 @@ ggplot(df,
        aes(x=state2, y=prop))+
   geom_bar(stat="identity", colour="white", aes(fill=vote_pres), position="dodge", width=0.8)+
   guides(fill = guide_legend(reverse = TRUE)) +
+  labs(fill="president voted")+
   xlab("State")+
   theme(axis.title.x = element_text(size=20))+
   scale_fill_manual(values = c("#00188F","#00BCF2"),
@@ -236,7 +365,7 @@ head(anes_vote_state2)
 
 #### Other limitation of the survey data?
 
-For the topic like opinion towards gay marriage, it's not surprising that people who voted for Donald Trump were not proponent of gay marriage. However, the proportion of the opinion "There should be no legal recognition of a gay or lesbian couple's relationship" is higher in the Web group than the Face-to-Face group. It might be due to the fact that people are shy if interviewed by another person and may give the answer that is modified. 
+As is shown previously, voters for Trump were not proponent of gay marriage. However, the proportion of the opinion "There should be no legal recognition of a gay or lesbian couple's relationship" is higher in the Web group than the Face-to-Face group. It might be due to the fact that people are shy if interviewed by another person and may give the answer that is modified. 
 
 ```{r fig.width=10, fig.height=5, echo=FALSE}
 anes_vote_gay <- use_dat %>%
@@ -246,13 +375,12 @@ anes_vote_gay <- use_dat %>%
   group_by(vote_pres, mode) %>%
   mutate(prop=n/sum(n))
 
-#options(repr.plot.width = 28, repr.plot.height = 14)
 
 ggplot(anes_vote_gay,
        aes(x=vote_pres, y=prop, fill=gay_marriage))+
   geom_bar(stat="identity", colour="black")+
   facet_wrap(~mode, ncol=1)+
-  labs(title="How did voters view gay marriage")+
+  labs(title="How did voters view gay marriage",fill="Gay marriage")+
   xlab("President voted")+
   theme(plot.title = element_text(hjust = 0.5,size=15,face="bold"))+
   coord_fixed(ratio=2)
@@ -261,7 +389,9 @@ ggplot(anes_vote_gay,
 
 # 4. Summary
 
-By looking back at the 2016 election survey data, we discover that interviewees who voted for Hillary Clinton showed positive attitude towards Barack Obama, and the interviewees who supported Donald Trump had quite the opposite attitude. Moreover, the survey data statistics with regard to state-wise voting proportion is not consistent with the fact, which reminds us of the limitation of survey data. Survey is useful for us to know what is happening and how people are thinking. However, we should be careful when analyzing or drawing conclusion of the survey data due to response or non-response biases.
+Based on the analysis of 2016 election survey data, three aspects of the characteristics of Trump voters are well summarized. Namely, they were not fans of Barack Obama, they were not satisfied with the U.S. economy during Obama's presidency and they prioritized the U.S. economy, they were not proponent of gay marriage (rather conservative).
+
+Moreover, the survey data statistics concerning state-wise voting proportion is not consistent with the fact, which reminds us of the limitation of survey data. Survey is useful for us to know what is happening and how people are thinking. However, we should be careful when analyzing or drawing conclusion of the survey data due to response or non-response biases.
 
 
 
@@ -275,6 +405,7 @@ https://commons.wikimedia.org/wiki/File:ElectoralCollege2016.svg
 
 https://www.washingtonpost.com/lifestyle/kidspost/donald-trump-is-elected-president-of-the-united-states/2016/11/09/58046db4-a684-11e6-ba59-a7d93165c6d4_story.html
 
+https://fivethirtyeight.com/features/voters-who-think-the-economy-is-the-countrys-biggest-problem-are-pretty-trumpy-that-might-not-help-him-much/
 
 
 

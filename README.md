@@ -9,20 +9,20 @@ This is the first and only *individual* (as opposed to *team*) this semester.
 
 Term: Fall 2020
 
-+ Projec title: A Data Story about ANES in 2016
++ Projec title: Who voted Trump in 2016
 + This project is conducted by Shuyuan Wang, sw3449
 
 + Project summary: Voters in America will decide on 3 November whether Donald Trump remains in the White House for another four years. Speaking of President Trump, his victory over Hillary Clinton in the 2016 presidential election stunned many political observers and pollsters who expected Hillary to be the winner. In this project, I would like to look deeper into the supporters for these two president candidates using the ANES 2016 Time Series data. The questions I want to answer with the data are:
 
-* What are the characteristics of the interviewees that voted for Donald Trump?
+    * What are the characteristics of the interviewees that voted for Donald Trump?
     
-    * What were different candidates' supporters' opinion on Obama, the previous president? 
+        * What were different candidates' supporters' opinion on Obama, the previous president? 
 
-    * What were their opinion on the U.S. economy since 2008?
+        * What were their opinion on the U.S. economy since 2008?
 
-    * What were their opinion on gay marriage? 
+        * What were their opinion on gay marriage? 
 
-* Additionally: What does the data say about the 2016 presidential election result? Is it consistent with the actual result?
+    * Additionally: What does the data say about the 2016 presidential election result? Is it consistent with the actual result?
 
 
 + Main findings:

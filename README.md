@@ -16,7 +16,7 @@ Term: Fall 2020
 
     * What are the characteristics of the interviewees that voted for Donald Trump?
     
-        * What were different candidates' supporters' opinion on Obama, the previous president? 
+        * What were their opinion on Obama, the previous president? 
 
         * What were their opinion on the U.S. economy since 2008?
 

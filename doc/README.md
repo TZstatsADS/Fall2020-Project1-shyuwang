@@ -14,3 +14,8 @@ Copy and paste the link for the `.html` file after https://htmlpreview.github.io
 
 For this project, open the address below in browser.
 https://htmlpreview.github.io/?https://github.com/TZstatsADS/Fall2020-Project1-shyuwang/blob/master/doc/ANES2016_analysis.html
+
+
+### Reproduce the R notebook
+
+Run each chunck in order to view the plots in Rstudio. Or knit the `.rmd` file to produce `.html` file directly.

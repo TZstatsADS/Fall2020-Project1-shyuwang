@@ -1,5 +1,5 @@
 ---
-title: "Who voted Trump in 2016"
+title: "Who voted Trump in 2016?"
 author: "Shuyuan Wang, sw3449"
 date: "9/23/2020"
 output:
@@ -13,13 +13,13 @@ output:
 
 ![Source: https://www.thedailybeast.com/donald-trump-goes-full-rage-monster-on-hillary-and-bill-clinton](../figs/hillary_trump.jpeg)
 
-In the remaining several months of 2020, the U.S. president election will be catching everyone's eyes. Voters in America will decide on 3 November whether Donald Trump remains in the White House for another four years. Speaking of President Trump, his victory over Hillary Clinton in the 2016 presidential election stunned many political observers and pollsters who expected Hillary to be the winner. In this blog, I would like to look deeper into the supporters for these two president candidates using the ANES 2016 Time Series data.
+In the remaining several months of 2020, the U.S. president election will be catching everyone's eyes. Voters in America will decide on 3 November whether Donald Trump remains in the White House for another four years. Speaking of President Trump, his victory over Hillary Clinton in the 2016 presidential election stunned many political observers and pollsters who expected Hillary to be the winner. In this blog, I would like to look deeper into the voters using the ANES 2016 Time Series data.
 
 Before diving into details, let me summarize the questions I want to answer with the data:
 
 * What are the characteristics of the interviewees that voted for Donald Trump?
     
-    * What were different candidates' supporters' opinion on Obama, the previous president? 
+    * What were their opinion on Obama, the previous president? 
 
     * What were their opinion on the U.S. economy since 2008?
 
@@ -46,7 +46,7 @@ library(cowplot)
 load(file="../output/use_dat.RData")
 ```
 
-The 2016 ANES Time Series Study contains `r nrow(use_dat)` cross-sectional cases. Pre-election interviews were conducted with study respondents during the two months prior to the 2016 elections and were followed by post-election interviewing beginning November 9, 2016. There were two modes of the study, face-to-face interviewing was complemented with data collection on the Internet, using substantially identical questionnaires. 
+The 2016 ANES Time Series Study contains `r nrow(use_dat)` cross-sectional cases, among which `r dim(use_dat %>% filter(vote_pres!="Refused"&vote_pres!="DK"&vote_pres!="INAP"&vote_pres!="Missing"))[1]` cases with 2016 presidential vote recorded. Pre-election interviews were conducted with study respondents during the two months prior to the 2016 elections and were followed by post-election interviewing beginning November 9, 2016. There were two modes of the study, face-to-face interviewing was complemented with data collection on the Internet, using substantially identical questionnaires. 
 
 Among thousands of variables contained in the dataset, I select some of them for the analysis. The variables selected are, for example, 2016 presidential vote, state code, feeling thermometer and affect for Barack Obama, opinion on gay marriage. 
 
@@ -177,7 +177,7 @@ ggplot(anes_eco_08,
   theme(plot.title = element_text(hjust = 0.5,size=12,face="bold"))
 ```
 
-From the chart we can see that Republican voters (i.e. who voted for Donald Trump) were not satisfied with the U.S. economy during Obama's presidency (i.e. since 2008). More than half of them thought the U.S. economy was worse than 2008 in 2016. 
+From the chart above we can see that Republican voters (i.e. who voted for Donald Trump) were not satisfied with the U.S. economy during Obama's presidency (i.e. since 2008). More than half of them thought the U.S. economy was worse than 2008 in 2016. 
 
 So, how did Trump's supporters think of the importance of economy?
 
@@ -211,7 +211,7 @@ ggplot(anes_most_imp_ordered,
   theme(axis.text.x = element_text(angle = 20))
 ```
 
-The bars above are ordered in the overall total number of votes, which means that among all interviewees most people thought the economy was the most important problem. And among those who think the economy was the most important proble, more than 60% of them are supporters of Trump.
+The bars above are ordered in the overall total number of votes, which means that among all interviewees most people thought the economy was the most important problem. And among those who thought the economy was the most important problem, more than 60% of them were supporters of Trump.
 
 ```{r fig.width=8, fig.height=4, echo=FALSE}
 anes_most_imp2 <- use_dat %>%
